@@ -20,8 +20,8 @@ import { useState } from "react";
 const ResizableLayout = () => {
   const [isOpen, setIsOpen] = useState(false)
   return (
-    <div className="h-screen flex bg-black">
-      <ResizablePanelGroup direction="horizontal" className="h-full w-full">
+    <div className="h-screen flex flex-col bg-black overflow-hidden">
+      <ResizablePanelGroup direction="horizontal" className="flex-1 overflow-hidden">
         {/* Left Sidebar */}
         <ResizablePanel
           defaultSize={20}
@@ -40,11 +40,11 @@ const ResizableLayout = () => {
         {/* Main Content Area */}
         <ResizablePanel defaultSize={80} className="flex flex-col h-full">
           {/* Header - spans full width */}
-          <div className="bg-[#000000] text-white p-4 h-16 flex items-center justify-center w-full">
+          <div className="bg-[#000000] text-white p-4 h-16 flex-shrink-0 flex items-center justify-center w-full">
             <h1 className="text-xl font-bold">Header - Not Resizable</h1>
           </div>
 
-          {/* Content below header - takes remaining space */}
+          {/* Scrollable content area */}
           <div className="flex-1 overflow-y-auto">
             <ResizablePanelGroup direction="horizontal" className="h-full">
               {/* Main Content */}
@@ -53,10 +53,10 @@ const ResizableLayout = () => {
                 minSize={30}
                 className="h-full"
               >
-                <div className="bg-[#121212] md:rounded-2xl overflow-y-auto p-4 h-full md:ml-1 lg:mr-1 flex flex-col">
+                <div className="bg-[#121212] md:rounded-2xl overflow-y-auto p-4 h-full md:ml-1 lg:mr-1">
                   <h2 className="font-bold mb-4">Main Content</h2>
                   <p>This area is resizable</p>
-                  <div className="">
+                  <div className="pb-20"> {/* Add padding to prevent content from being hidden behind footer */}
                     {Array(20)
                       .fill(0)
                       .map((_, i) => (
@@ -91,11 +91,10 @@ const ResizableLayout = () => {
             </ResizablePanelGroup>
           </div>
 
-          {/* Playback Controller - shown on md screens and larger */}
-          <div className="bg-[#121212] md:bg-transparent" onClick={() => setIsOpen(true)}>
-            <div className="block lg:hidden bg-[#7561F7] md:ml-1 rounded-full md:rounded-none p-4 h-20">
+          {/* Audio Player (shown on all screens) */}
+          <div className="bg-[#121212] md:bg-transparent flex-shrink-0" onClick={() => setIsOpen(true)}>
+            <div className="bg-[#7561F7] md:ml-1 rounded-full md:rounded-none p-4 h-20">
               <div className="flex items-center justify-between h-full">
-                {/* Left: Image + Title */}
                 <div className="flex items-center space-x-3">
                   <div className="h-12 w-12 bg-[#333] rounded"></div>
                   <div>
@@ -103,8 +102,6 @@ const ResizableLayout = () => {
                     <p className="text-xs text-gray-300">Artist Name</p>
                   </div>
                 </div>
-
-                {/* Right: Play + Like buttons */}
                 <div className="flex items-center space-x-4">
                   <button className="text-white hover:text-gray-300">
                     <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
@@ -113,11 +110,7 @@ const ResizableLayout = () => {
                   </button>
                   <button className="text-white hover:text-gray-300">
                     <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 
-            5.42 4.42 3 7.5 3c1.74 0 3.41 1.01 4.5 
-            2.09C13.09 4.01 14.76 3 16.5 3 19.58 3 22 
-            5.42 22 8.5c0 3.78-3.4 6.86-8.55 
-            11.54L12 21.35z" />
+                      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 1.01 4.5 2.09C13.09 4.01 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                     </svg>
                   </button>
                 </div>
@@ -125,8 +118,8 @@ const ResizableLayout = () => {
             </div>
           </div>
 
-          {/* Mobile Navigation Footer - fixed at bottom on small screens */}
-          <div className="md:hidden bg-[#000000] border-t border-[#282828] p-2 sticky bottom-0 z-50">
+          {/* Mobile Navigation Footer */}
+          <div className="md:hidden bg-[#000000] border-t border-[#282828] p-2 flex-shrink-0">
             <div className="flex justify-around items-center">
               <button className="flex flex-col items-center p-2 text-white">
                 <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
