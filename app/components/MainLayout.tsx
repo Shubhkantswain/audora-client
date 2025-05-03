@@ -17,7 +17,6 @@ import {
 import { FastForward, Heart, Pause, Rewind, Volume2 } from "lucide-react";
 import { useState } from "react";
 
-
 const ResizableLayout = () => {
   const [isOpen, setIsOpen] = useState(false)
   return (
@@ -39,14 +38,14 @@ const ResizableLayout = () => {
         <ResizableHandle className="hidden md:block" />
 
         {/* Main Content Area */}
-        <ResizablePanel defaultSize={80} className="flex flex-col">
+        <ResizablePanel defaultSize={80} className="flex flex-col h-full">
           {/* Header - spans full width */}
           <div className="bg-[#000000] text-white p-4 h-16 flex items-center justify-center w-full">
             <h1 className="text-xl font-bold">Header - Not Resizable</h1>
           </div>
 
-          {/* Content below header */}
-          <div className="flex-1 min-h-0"> {/* min-h-0 is crucial for proper flex sizing */}
+          {/* Content below header - takes remaining space */}
+          <div className="flex-1 overflow-y-auto">
             <ResizablePanelGroup direction="horizontal" className="h-full">
               {/* Main Content */}
               <ResizablePanel
@@ -68,13 +67,11 @@ const ResizableLayout = () => {
 
                     <Drawer open={isOpen} onClose={() => setIsOpen(false)}>
                       <DrawerContent className="h-screen max-h-screen rounded-none bg-black p-0 overflow-hidden">
-                    hellooooo
+                        hellooooo
                       </DrawerContent>
                     </Drawer>
-
                   </div>
                 </div>
-
               </ResizablePanel>
 
               <ResizableHandle className="hidden lg:block" />
@@ -89,9 +86,6 @@ const ResizableLayout = () => {
                 <div className="bg-[#121212] rounded-2xl overflow-y-auto p-4 h-full mx-0 flex flex-col mr-2">
                   <h2 className="font-bold mb-4">Right Sidebar</h2>
                   <p>This sidebar should be resizable</p>
-                  <div className="">
-
-                  </div>
                 </div>
               </ResizablePanel>
             </ResizablePanelGroup>
@@ -113,13 +107,11 @@ const ResizableLayout = () => {
                 {/* Right: Play + Like buttons */}
                 <div className="flex items-center space-x-4">
                   <button className="text-white hover:text-gray-300">
-                    {/* Play Icon */}
                     <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M6 4l10 6-10 6V4z" />
                     </svg>
                   </button>
                   <button className="text-white hover:text-gray-300">
-                    {/* Like Icon (Heart) */}
                     <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 
             5.42 4.42 3 7.5 3c1.74 0 3.41 1.01 4.5 
@@ -133,9 +125,8 @@ const ResizableLayout = () => {
             </div>
           </div>
 
-
-          {/* Mobile Navigation Footer - only shown on small screens */}
-          <div className="md:hidden bg-[#000000] border-t border-[#282828] p-2">
+          {/* Mobile Navigation Footer - fixed at bottom on small screens */}
+          <div className="md:hidden bg-[#000000] border-t border-[#282828] p-2 sticky bottom-0 z-50">
             <div className="flex justify-around items-center">
               <button className="flex flex-col items-center p-2 text-white">
                 <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
@@ -169,4 +160,4 @@ const ResizableLayout = () => {
   );
 };
 
-export default ResizableLayout;
+export default ResizableLayout
