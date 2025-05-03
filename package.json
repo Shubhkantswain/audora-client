@@ -37,7 +37,7 @@
 		"react-resizable-panels": "^3.0.0",
 		"sonner": "^1.7.4",
 		"sweetalert2": "^11.16.1",
-		"tailwind-merge": "^3.2.0",
+		"tailwind-merge": "^3.0.1",
 		"tailwindcss-animate": "^1.0.7",
 		"vaul": "^1.1.2",
 		"zustand": "^5.0.3"
@@ -64,7 +64,7 @@
 		"typescript": "^5.1.6",
 		"vite": "^5.1.0",
 		"vite-tsconfig-paths": "^4.2.1",
-		"wrangler": "^4.14.1"
+		"wrangler": "^3.107.3"
 	},
 	"engines": {
 		"node": ">=20.0.0"
