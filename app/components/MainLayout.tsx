@@ -68,7 +68,7 @@ const ResizableLayout = () => {
 
                     <Drawer open={isOpen} onClose={() => setIsOpen(false)}>
                       <DrawerContent className="h-screen max-h-screen rounded-none bg-black p-0 overflow-hidden">
-                    
+                    hellooooo
                       </DrawerContent>
                     </Drawer>
 
