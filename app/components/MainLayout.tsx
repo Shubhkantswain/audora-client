@@ -1,9 +1,36 @@
+import React, { useEffect, useState } from "react";
+import { motion, AnimatePresence } from 'framer-motion'
 import {
-  ResizablePanelGroup,
-  ResizablePanel,
-  ResizableHandle,
-} from "./ui/resizable";
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "./ui/carousel"
 
+import {
+  Home,
+  Search,
+  Library,
+  Download,
+  Heart,
+  Play,
+  Shuffle,
+  SkipBack,
+  Pause,
+  SkipForward,
+  Volume2,
+  ChevronLeft,
+  MoreVertical,
+  List,
+  Repeat,
+  ChevronDown,
+  MoreHorizontal,
+  Cast,
+  Share2,
+  Rewind,
+  FastForward,
+} from "lucide-react";
 import {
   Drawer,
   DrawerClose,
@@ -14,143 +41,324 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "./ui/drawer"
-import { FastForward, Heart, Pause, Rewind, Volume2 } from "lucide-react";
-import { useState } from "react";
 
-const ResizableLayout = () => {
-  const [isOpen, setIsOpen] = useState(false)
+
+const BottomNav = () => {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <div className="h-screen flex flex-col bg-black overflow-hidden">
-      <ResizablePanelGroup direction="horizontal" className="flex-1 overflow-hidden">
-        {/* Left Sidebar */}
-        <ResizablePanel
-          defaultSize={20}
-          minSize={10}
-          maxSize={20}
-          className="h-full hidden md:block"
-        >
-          <div className="bg-[#121212] h-full overflow-y-auto p-4 mx-0">
-            <h2 className="font-bold mb-4">Left Sidebar</h2>
-            <p>This sidebar should be resizable</p>
-          </div>
-        </ResizablePanel>
+    <div
+      className={`fixed bottom-0 left-0 w-full h-16 text-white flex items-center justify-around border-t border-zinc-700 z-20 transition-all duration-300 backdrop-blur-md ${scrolled ? "bg-black" : "bg-black/50"
+        }`}
+    >
+      <div className="flex flex-col items-center text-xs">
+        <Home size={20} />
+        <span>Home</span>
+      </div>
+      <div className="flex flex-col items-center text-xs">
+        <Search size={20} />
+        <span>Search</span>
+      </div>
+      <div className="flex flex-col items-center text-xs">
+        <Library size={20} />
+        <span>Your Library</span>
+      </div>
+      <div className="flex flex-col items-center text-xs">
+        <Download size={20} />
+        <span>Get App</span>
+      </div>
+    </div>
 
-        <ResizableHandle className="hidden md:block" />
+  );
+};
 
-        {/* Main Content Area */}
-        <ResizablePanel defaultSize={80} className="flex flex-col h-full">
-          {/* Header - spans full width */}
-          <div className="bg-[#000000] text-white p-4 h-16 flex-shrink-0 flex items-center justify-center w-full">
-            <h1 className="text-xl font-bold">Header - Not Resizable</h1>
-          </div>
+const images = [
+  {
+    src: 'https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da84ec782462ad3e757fce6a1c11',
+    title: 'Galliyan',
+    subtitle: 'Ankit Tiwari, Manoj Muntashir'
+  },
+  {
+    src: 'https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8477ef554ce79359be928fae5d',
+    title: 'Tum Hi Ho',
+    subtitle: 'Arijit Singh'
+  },
+  {
+    src: 'https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da843cdf544ad09980c839a8d00d',
+    title: 'Tera Ban Jaunga',
+    subtitle: 'Akhil Sachdeva, Tulsi Kumar'
+  }
+]
 
-          {/* Scrollable content area */}
-          <div className="flex-1 overflow-y-auto">
-            <ResizablePanelGroup direction="horizontal" className="h-full">
-              {/* Main Content */}
-              <ResizablePanel
-                defaultSize={75}
-                minSize={30}
-                className="h-full"
-              >
-                <div className="bg-[#121212] md:rounded-2xl overflow-y-auto p-4 h-full md:ml-1 lg:mr-1">
-                  <h2 className="font-bold mb-4">Main Content</h2>
-                  <p>This area is resizable</p>
-                  <div className="pb-20"> {/* Add padding to prevent content from being hidden behind footer */}
-                    {Array(20)
-                      .fill(0)
-                      .map((_, i) => (
-                        <p key={i} className="mb-2">
-                          Sample content line {i + 1}
-                        </p>
-                      ))}
+const AudioPlayer = () => {
+  const [isOpen, setIsOpen] = useState(false)
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const current = images[currentIndex]
 
-                    <Drawer open={isOpen} onClose={() => setIsOpen(false)}>
-                      <DrawerContent className="h-screen max-h-screen rounded-none bg-black p-0 overflow-hidden">
-                        hellooooo
-                      </DrawerContent>
-                    </Drawer>
-                  </div>
-                </div>
-              </ResizablePanel>
+  const handleNext = () => {
+    setCurrentIndex((prev) => (prev + 1) % images.length)
+  }
 
-              <ResizableHandle className="hidden lg:block" />
+  const handlePrev = () => {
+    setCurrentIndex((prev) => (prev - 1 + images.length) % images.length)
+  }
 
-              {/* Right Sidebar */}
-              <ResizablePanel
-                defaultSize={35}
-                minSize={25}
-                maxSize={35}
-                className="h-full hidden lg:block"
-              >
-                <div className="bg-[#121212] rounded-2xl overflow-y-auto p-4 h-full mx-0 flex flex-col mr-2">
-                  <h2 className="font-bold mb-4">Right Sidebar</h2>
-                  <p>This sidebar should be resizable</p>
-                </div>
-              </ResizablePanel>
-            </ResizablePanelGroup>
-          </div>
+  return (
+    <>
+      {/* Bottom Mini Player */}
+      <div
+        className="fixed bottom-16 left-0 w-full bg-[#7c0a02] text-white p-3 flex justify-between items-center z-30"
+        onClick={() => setIsOpen(true)}
+      >
+        <div>
+          <p className="text-sm font-bold">{current.title}</p>
+          <p className="text-xs text-white/80">{current.subtitle}</p>
+        </div>
+        <div className="flex items-center gap-4">
+          <Heart size={20} className="text-green-400" />
+          <Play size={24} className="text-white" />
+        </div>
+      </div>
 
-          {/* Audio Player (shown on all screens) */}
-          <div className="bg-[#121212] md:bg-transparent flex-shrink-0" onClick={() => setIsOpen(true)}>
-            <div className="bg-[#7561F7] md:ml-1 rounded-full md:rounded-none p-4 h-20">
-              <div className="flex items-center justify-between h-full">
-                <div className="flex items-center space-x-3">
-                  <div className="h-12 w-12 bg-[#333] rounded"></div>
-                  <div>
-                    <p className="text-sm font-medium text-white">Song Title</p>
-                    <p className="text-xs text-gray-300">Artist Name</p>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-4">
-                  <button className="text-white hover:text-gray-300">
-                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M6 4l10 6-10 6V4z" />
-                    </svg>
-                  </button>
-                  <button className="text-white hover:text-gray-300">
-                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 1.01 4.5 2.09C13.09 4.01 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+      {/* Full Drawer Player */}
+      <Drawer open={isOpen} onClose={() => setIsOpen(false)} shouldScaleBackground={false}>
+        <DrawerContent className="h-screen w-screen max-w-none rounded-none bg-gradient-to-b from-gray-900 to-black">
+
+
+          <div className="relative flex flex-col h-screen bg-black text-white overflow-hidden">
+            {/* Blurred Background Image */}
+            <div
+              className="absolute inset-0 z-0"
+              style={{
+                backgroundImage: `url(${images[currentIndex].src})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                filter: 'blur(80px)',
+                opacity: 0.7,
+                transform: 'scale(1.2)'
+              }}
+            />
+
+            {/* Dark overlay to ensure text readability */}
+            <div className="absolute inset-0 z-0 bg-black bg-opacity-30" />
+
+            {/* Content */}
+            <div className="relative z-10 flex flex-col h-full overflow-y-auto scrollbar-hide">
+              {/* Header */}
+              <div className="flex justify-center items-center p-4">
+                <div className="text-center">
+                  <button className="text-white" onClick={() => setIsOpen(false)}>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 90.64 30.831" width="24" height="8">
+                      <path d="m4.486 14.456 32.352 13.938c3.156 1.387 5.552 2.437 8.48 2.437 2.932 0 5.357-1.05 8.484-2.437l32.353-13.938c2.612-1.192 4.485-3.514 4.485-6.42C90.64 3.184 87.085 0 83 0c-2.279 0-5.172 1.325-7.569 2.42L42.845 16.358h4.95L15.21 2.42C12.812 1.325 9.948 0 7.636 0 3.55 0 0 3.184 0 8.036c0 2.906 1.873 5.228 4.486 6.42z"></path>
                     </svg>
                   </button>
                 </div>
               </div>
-            </div>
-          </div>
 
-          {/* Mobile Navigation Footer */}
-          <div className="md:hidden bg-[#000000] border-t border-[#282828] p-2 flex-shrink-0">
-            <div className="flex justify-around items-center">
-              <button className="flex flex-col items-center p-2 text-white">
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-                </svg>
-                <span className="text-xs mt-1">Home</span>
-              </button>
-              <button className="flex flex-col items-center p-2 text-gray-400 hover:text-white">
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M12 1.586l-4 4v12.828l4-4V1.586zM3.707 3.293A1 1 0 002 4v10a1 1 0 00.293.707L6 18.414V5.586L3.707 3.293zM17.707 5.293L14 1.586v12.828l2.293 2.293A1 1 0 0018 16V6a1 1 0 00-.293-.707z" clipRule="evenodd" />
-                </svg>
-                <span className="text-xs mt-1">Search</span>
-              </button>
-              <button className="flex flex-col items-center p-2 text-gray-400 hover:text-white">
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z" />
-                </svg>
-                <span className="text-xs mt-1">Library</span>
-              </button>
-              <button className="flex flex-col items-center p-2 text-gray-400 hover:text-white">
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
-                </svg>
-                <span className="text-xs mt-1">Settings</span>
-              </button>
+              {/* Album Art with Animation */}
+              <div className="flex-1 flex items-center justify-center px-4">
+                <div className="w-full max-w-md aspect-square relative">
+                  <div className="w-full h-full rounded-md overflow-hidden shadow-2xl">
+                    <AnimatePresence mode="wait">
+                      <motion.img
+                        key={current.src}
+                        src={current.src}
+                        alt="Album Cover"
+                        className="w-full h-full object-cover"
+                        initial={{ x: 100, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        exit={{ x: -100, opacity: 0 }}
+                        transition={{ duration: 0.3, ease: 'easeInOut' }}
+                      />
+                    </AnimatePresence>
+                  </div>
+                </div>
+              </div>
+
+              {/* Track Info */}
+              <div className="px-4 pt-4">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h3 className="text-xl font-bold">{current.title}</h3>
+                    <p className="text-gray-300 text-sm">{current.subtitle}</p>
+                  </div>
+                  <button className="p-2">
+                    <Heart className="w-6 h-6 text-white" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Progress Bar */}
+              <div className="px-4 py-2">
+                <div className="w-full bg-gray-700 rounded-full h-1">
+                  <div className="bg-white h-1 rounded-full w-1/12"></div>
+                </div>
+                <div className="flex justify-between text-xs mt-1 text-gray-300">
+                  <span>0:01</span>
+                  <span>5:40</span>
+                </div>
+              </div>
+
+              {/* Controls */}
+              <div className="p-4">
+                <div className="flex justify-center items-center">
+                  <div className="flex space-x-8 md:space-x-20 items-center">
+                    <button onClick={handlePrev}>
+                      <Rewind className="w-8 h-8" />
+                    </button>
+                    <button onClick={handlePrev} className="active:scale-105">
+                      <svg
+                        width="30"
+                        height="30"
+                        data-encore-id="icon"
+                        role="img"
+                        aria-hidden="true"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path d="M6.3 3a.7.7 0 0 1 .7.7v6.805l11.95-6.899a.7.7 0 0 1 1.05.606v15.576a.7.7 0 0 1-1.05.606L7 13.495V20.3a.7.7 0 0 1-.7.7H4.7a.7.7 0 0 1-.7-.7V3.7a.7.7 0 0 1 .7-.7h1.6z" />
+                      </svg>
+                    </button>
+                    <button className="bg-white text-black rounded-full p-4 active:scale-105">
+                      <svg
+                        width="24"
+                        height="24"
+                        data-encore-id="icon"
+                        role="img"
+                        aria-hidden="true"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path d="m7.05 3.606 13.49 7.788a.7.7 0 0 1 0 1.212L7.05 20.394A.7.7 0 0 1 6 19.788V4.212a.7.7 0 0 1 1.05-.606z" />
+                      </svg>
+                    </button>
+                    <button onClick={handleNext} className="active:scale-105">
+                      <svg
+                        width="30"
+                        height="30"
+                        data-encore-id="icon"
+                        role="img"
+                        aria-hidden="true"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path d="M17.7 3a.7.7 0 0 0-.7.7v6.805L5.05 3.606A.7.7 0 0 0 4 4.212v15.576a.7.7 0 0 0 1.05.606L17 13.495V20.3a.7.7 0 0 0 .7.7h1.6a.7.7 0 0 0 .7-.7V3.7a.7.7 0 0 0-.7-.7h-1.6z" />
+                      </svg>
+                    </button>
+                    <button onClick={handleNext}>
+                      <FastForward className="w-8 h-8" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Bottom Bar */}
+              <div className="p-4 flex justify-between">
+                <button className="p-2">
+                  <div className="w-6 h-6 border-2 border-white flex items-center justify-center">
+                    <span className="text-xs">HD</span>
+                  </div>
+                </button>
+              </div>
             </div>
           </div>
-        </ResizablePanel>
-      </ResizablePanelGroup>
+        </DrawerContent>
+      </Drawer>
+    </>
+  )
+}
+
+
+
+const Section = ({ title, children }) => (
+  <div className="mb-6">
+    {title && <h2 className="text-lg font-bold mb-4">{title}</h2>}
+    <div className="flex gap-4 overflow-x-auto">
+      {children}
+    </div>
+  </div>
+
+
+);
+
+const Card = ({ title, img }) => (
+  <div className="min-w-[150px] shrink-0">
+    <img
+      src={img}
+      alt={title}
+      className="w-full h-[150px] object-cover rounded-lg mb-2"
+    />
+    <p className="text-sm font-medium">{title}</p>
+  </div>
+);
+
+const SpotifyLikeLayout = ({ children }) => {
+  return (
+    <div className="bg-black text-white min-h-screen pb-36">
+      {/* Header */}
+      <header className="px-4 pt-4">
+        <h1 className="text-2xl font-bold mb-6">Good evening</h1>
+      </header>
+
+      {/* Main Content */}
+      <main className="px-4 overflow-y-auto pb-24">
+        {/* Example Sections */}
+        <Section>
+          <Card title="Trending Now India" img="https://htmlcolorcodes.com/assets/images/colors/baby-blue-color-solid-background-1920x1080.png" />
+          <Card title="Bollywood Dance Music" img="https://htmlcolorcodes.com/assets/images/colors/baby-blue-color-solid-background-1920x1080.png" />
+          <Card title="WWE Royal Rumble 2025 Entry" img="https://htmlcolorcodes.com/assets/images/colors/baby-blue-color-solid-background-1920x1080.png" />
+        </Section>
+
+        <Section>
+          <Card title="Trending Now India" img="https://htmlcolorcodes.com/assets/images/colors/baby-blue-color-solid-background-1920x1080.png" />
+          <Card title="Bollywood Dance Music" img="https://htmlcolorcodes.com/assets/images/colors/baby-blue-color-solid-background-1920x1080.png" />
+          <Card title="WWE Royal Rumble 2025 Entry" img="https://htmlcolorcodes.com/assets/images/colors/baby-blue-color-solid-background-1920x1080.png" />
+        </Section>  <Section>
+          <Card title="Trending Now India" img="https://htmlcolorcodes.com/assets/images/colors/baby-blue-color-solid-background-1920x1080.png" />
+          <Card title="Bollywood Dance Music" img="https://htmlcolorcodes.com/assets/images/colors/baby-blue-color-solid-background-1920x1080.png" />
+          <Card title="WWE Royal Rumble 2025 Entry" img="https://htmlcolorcodes.com/assets/images/colors/baby-blue-color-solid-background-1920x1080.png" />
+        </Section>  <Section>
+          <Card title="Trending Now India" img="https://htmlcolorcodes.com/assets/images/colors/baby-blue-color-solid-background-1920x1080.png" />
+          <Card title="Bollywood Dance Music" img="https://htmlcolorcodes.com/assets/images/colors/baby-blue-color-solid-background-1920x1080.png" />
+          <Card title="WWE Royal Rumble 2025 Entry" img="https://htmlcolorcodes.com/assets/images/colors/baby-blue-color-solid-background-1920x1080.png" />
+        </Section>  <Section>
+          <Card title="Trending Now India" img="https://htmlcolorcodes.com/assets/images/colors/baby-blue-color-solid-background-1920x1080.png" />
+          <Card title="Bollywood Dance Music" img="https://htmlcolorcodes.com/assets/images/colors/baby-blue-color-solid-background-1920x1080.png" />
+          <Card title="WWE Royal Rumble 2025 Entry" img="https://htmlcolorcodes.com/assets/images/colors/baby-blue-color-solid-background-1920x1080.png" />
+        </Section>  <Section>
+          <Card title="Trending Now India" img="https://htmlcolorcodes.com/assets/images/colors/baby-blue-color-solid-background-1920x1080.png" />
+          <Card title="Bollywood Dance Music" img="https://htmlcolorcodes.com/assets/images/colors/baby-blue-color-solid-background-1920x1080.png" />
+          <Card title="WWE Royal Rumble 2025 Entry" img="https://htmlcolorcodes.com/assets/images/colors/baby-blue-color-solid-background-1920x1080.png" />
+        </Section>  <Section>
+          <Card title="Trending Now India" img="https://htmlcolorcodes.com/assets/images/colors/baby-blue-color-solid-background-1920x1080.png" />
+          <Card title="Bollywood Dance Music" img="https://htmlcolorcodes.com/assets/images/colors/baby-blue-color-solid-background-1920x1080.png" />
+          <Card title="WWE Royal Rumble 2025 Entry" img="https://htmlcolorcodes.com/assets/images/colors/baby-blue-color-solid-background-1920x1080.png" />
+        </Section>  <Section>
+          <Card title="Trending Now India" img="https://htmlcolorcodes.com/assets/images/colors/baby-blue-color-solid-background-1920x1080.png" />
+          <Card title="Bollywood Dance Music" img="https://htmlcolorcodes.com/assets/images/colors/baby-blue-color-solid-background-1920x1080.png" />
+          <Card title="WWE Royal Rumble 2025 Entry" img="https://htmlcolorcodes.com/assets/images/colors/baby-blue-color-solid-background-1920x1080.png" />
+        </Section>  <Section>
+          <Card title="Trending Now India" img="https://htmlcolorcodes.com/assets/images/colors/baby-blue-color-solid-background-1920x1080.png" />
+          <Card title="Bollywood Dance Music" img="https://htmlcolorcodes.com/assets/images/colors/baby-blue-color-solid-background-1920x1080.png" />
+          <Card title="WWE Royal Rumble 2025 Entry" img="https://htmlcolorcodes.com/assets/images/colors/baby-blue-color-solid-background-1920x1080.png" />
+        </Section>
+        {/* Inject additional page content */}
+        {children}
+      </main>
+
+      {/* Footer and Nav */}
+      <AudioPlayer />
+      <BottomNav />
     </div>
   );
 };
 
-export default ResizableLayout
+export default SpotifyLikeLayout;
